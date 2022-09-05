@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_05_135458) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_05_135138) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "menus", force: :cascade do |t|
+    t.string "name"
+    t.bigint "restaurant_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["restaurant_id"], name: "index_menus_on_restaurant_id"
+  end
 
   create_table "restaurants", force: :cascade do |t|
     t.string "name"
@@ -33,15 +41,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_05_135458) do
     t.index ["restaurant_id"], name: "index_servers_on_restaurant_id"
   end
 
-  create_table "tables", force: :cascade do |t|
-    t.bigint "restaurant_id", null: false
-    t.bigint "server_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["restaurant_id"], name: "index_tables_on_restaurant_id"
-    t.index ["server_id"], name: "index_tables_on_server_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -54,8 +53,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_05_135458) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "menus", "restaurants"
   add_foreign_key "restaurants", "users"
   add_foreign_key "servers", "restaurants"
-  add_foreign_key "tables", "restaurants"
-  add_foreign_key "tables", "servers"
 end
